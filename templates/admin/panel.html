@@ -1,0 +1,38 @@
+<!-- templates/admin/panel.html -->
+{% extends "base.html" %}
+{% block content %}
+<div class="bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-6">管理员控制面板</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div class="bg-blue-100 p-4 rounded">
+            <h3 class="font-bold mb-2">用户统计</h3>
+            <p>总用户数：{{ users|length }}</p>
+            <p>管理员数：{{ users|selectattr('is_admin', 'equalto', true)|list|length }}</p>
+            <p>评审员数：{{ users|selectattr('role', 'equalto', 'reviewer')|list|length }}</p>
+        </div>
+        <div class="bg-green-100 p-4 rounded">
+            <h3 class="font-bold mb-2">论文统计</h3>
+            <p>总论文数：{{ papers|length }}</p>
+            <p>待审核：{{ papers|selectattr('status', 'equalto', 'pending')|list|length }}</p>
+            <p>已接受：{{ papers|selectattr('status', 'equalto', 'accepted')|list|length }}</p>
+        </div>
+        <div class="bg-yellow-100 p-4 rounded">
+            <h3 class="font-bold mb-2">评审统计</h3>
+            <p>总评审数：{{ reviews|length }}</p>
+            <p>平均分数：{{ "%.1f"|format(reviews|map(attribute='score')|sum / reviews|length) if reviews|length > 0 else 0 }}</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <a href="{{ url_for('manage_users') }}"
+           class="bg-blue-500 text-white p-4 rounded text-center hover:bg-blue-600">
+            用户管理
+        </a>
+        <a href="{{ url_for('dashboard') }}"
+           class="bg-green-500 text-white p-4 rounded text-center hover:bg-green-600">
+            论文管理
+        </a>
+    </div>
+</div>
+{% endblock %}

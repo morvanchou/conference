@@ -1,0 +1,14 @@
+<!-- templates/index.html -->
+{% extends "base.html" %}
+{% block content %}
+<div class="text-center">
+    <h1 class="text-4xl font-bold mb-4">欢迎使用会议投稿系统</h1>
+    <p class="text-xl mb-8">在线提交和评审学术论文</p>
+    {% if 'user_id' not in session %}
+        <div class="space-x-4">
+            <a href="{{ url_for('login') }}" class="bg-blue-500 text-white px-6 py-2 rounded">登录</a>
+            <a href="{{ url_for('register') }}" class="bg-green-500 text-white px-6 py-2 rounded">注册</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+<!-- templates/admin_dashboard.html -->
+{% extends "base.html" %}
+{% block content %}
+<div class="bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-6">论文管理</h2>
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full table-auto">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="px-4 py-2">论文标题</th>
+                    <th class="px-4 py-2">作者</th>
+                    <th class="px-4 py-2">提交时间</th>
+                    <th class="px-4 py-2">状态</th>
+                    <th class="px-4 py-2">评审数</th>
+                    <th class="px-4 py-2">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for paper in papers %}
+                <tr>
+                    <td class="border px-4 py-2">{{ paper.title }}</td>
+                    <td class="border px-4 py-2">{{ paper.author.username }}</td>
+                    <td class="border px-4 py-2">{{ paper.submitted_at.strftime('%Y-%m-%d') }}</td>
+                    <td class="border px-4 py-2">
+                        {% if paper.status == 'pending' %}待审核
+                        {% elif paper.status == 'under_review' %}评审中
+                        {% elif paper.status == 'accepted' %}已接受
+                        {% else %}已拒绝
+                        {% endif %}
+                    </td>
+                    <td class="border px-4 py-2">{{ paper.reviews|length }}</td>
+                    <td class="border px-4 py-2">
+                        <form action="{{ url_for('assign_reviewer') }}" method="POST" class="inline">
+                            <input type="hidden" name="paper_id" value="{{ paper.id }}">
+                            <select name="reviewer_id" class="border rounded px-2 py-1 mr-2">
+                                {% for user in users if user.role == 'reviewer' %}
+                                    <option value="{{ user.id }}">{{ user.username }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit"
+                                    class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">
+                                分配评审
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

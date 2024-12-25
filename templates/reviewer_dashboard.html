@@ -1,0 +1,61 @@
+<!-- templates/reviewer_dashboard.html -->
+{% extends "base.html" %}
+{% block content %}
+<div class="bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-6">待评审论文</h2>
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full table-auto">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="px-4 py-2">论文标题</th>
+                    <th class="px-4 py-2">作者</th>
+                    <th class="px-4 py-2">提交时间</th>
+                    <th class="px-4 py-2">状态</th>
+                    <th class="px-4 py-2">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for paper in papers %}
+                <tr>
+                    <td class="border px-4 py-2">{{ paper.title }}</td>
+                    <td class="border px-4 py-2">{{ paper.author.username }}</td>
+                    <td class="border px-4 py-2">{{ paper.submitted_at.strftime('%Y-%m-%d') }}</td>
+                    <td class="border px-4 py-2">
+                        {% if paper.status == 'under_review' %}评审中{% endif %}
+                    </td>
+                    <td class="border px-4 py-2">
+                        <a href="{{ url_for('download_file', filename=paper.filename) }}"
+                           class="text-blue-500 hover:text-blue-700 mr-2">下载</a>
+                        <a href="{{ url_for('review_paper', paper_id=paper.id) }}"
+                           class="text-green-500 hover:text-green-700">评审</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h2 class="text-2xl font-bold my-6">已完成评审</h2>
+    <div class="overflow-x-auto">
+        <table class="min-w-full table-auto">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="px-4 py-2">论文标题</th>
+                    <th class="px-4 py-2">评分</th>
+                    <th class="px-4 py-2">评审时间</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for review in reviews %}
+                <tr>
+                    <td class="border px-4 py-2">{{ review.paper.title }}</td>
+                    <td class="border px-4 py-2">{{ review.score }}</td>
+                    <td class="border px-4 py-2">{{ review.created_at.strftime('%Y-%m-%d') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
